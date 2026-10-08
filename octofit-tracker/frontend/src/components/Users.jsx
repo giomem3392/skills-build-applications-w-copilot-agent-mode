@@ -1,4 +1,7 @@
+import { fetchCollection as fetch } from '../api.js'
 import ResourceTable from './ResourceTable.jsx'
+
+const loadUsers = ({ signal }) => fetch('/api/users/', { signal })
 
 const columns = [
   { key: 'displayName', label: 'Name' },
@@ -8,5 +11,5 @@ const columns = [
 ]
 
 export default function Users() {
-  return <ResourceTable title="Users" endpoint="/api/users/" columns={columns} />
+  return <ResourceTable title="Users" load={loadUsers} columns={columns} />
 }

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { fetchCollection } from '../api.js'
 
 function formatValue(value) {
   if (value === null || value === undefined || value === '') return '-'
@@ -11,7 +10,7 @@ function formatValue(value) {
   return String(value)
 }
 
-export default function ResourceTable({ title, endpoint, columns }) {
+export default function ResourceTable({ title, load, columns }) {
   const [records, setRecords] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -23,7 +22,7 @@ export default function ResourceTable({ title, endpoint, columns }) {
       setLoading(true)
       setError('')
       try {
-        setRecords(await fetchCollection(endpoint, { signal: controller.signal }))
+        setRecords(await load({ signal: controller.signal }))
       } catch (requestError) {
         if (requestError.name !== 'AbortError') {
           setError(requestError.message || 'Unable to load records')
@@ -35,7 +34,7 @@ export default function ResourceTable({ title, endpoint, columns }) {
 
     loadRecords()
     return () => controller.abort()
-  }, [endpoint])
+  }, [load])
 
   return (
     <section>
